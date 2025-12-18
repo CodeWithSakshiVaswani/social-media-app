@@ -106,7 +106,7 @@ export function LoginOrSignupForm({ type }: LoginOrSignupFormProps) {
                     {keyword}
                   </Button>
                   <Button variant="outline" type="button">
-                    {keyword} with Google
+                    Log in with Google
                   </Button>
                   <FieldDescription className="text-center">
                     {type === "login" ? (
