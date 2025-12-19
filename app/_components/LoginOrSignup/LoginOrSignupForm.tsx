@@ -20,6 +20,7 @@ import { useState } from "react";
 import useCredsSignup from "@/hooks/auth/useCredsSignup";
 import useCredsLogin from "@/hooks/auth/useCredsLogin";
 import Link from "next/link";
+import useGoogleLogin from "@/hooks/auth/useGoogleLogin";
 
 type LoginOrSignupFormProps = {
   type: "login" | "signup";
@@ -30,8 +31,10 @@ export function LoginOrSignupForm({ type }: LoginOrSignupFormProps) {
     email: "",
     password: "",
   });
-  const { mutateAsync: signup } = useCredsSignup();
-  const { mutateAsync: login } = useCredsLogin();
+  const { mutateAsync: signup, isPending: isSignupPending } = useCredsSignup();
+  const { mutateAsync: login, isPending: isLoginPending } = useCredsLogin();
+  const { mutateAsync: googleLogin, isPending: isGoogleLoginPending } =
+    useGoogleLogin();
   const keyword = type === "login" ? "Login" : "Sign Up";
 
   return (
@@ -75,12 +78,12 @@ export function LoginOrSignupForm({ type }: LoginOrSignupFormProps) {
                 <Field>
                   <div className="flex items-center">
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <a
-                      href="#"
+                    <Link
+                      href="/password-reset"
                       className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                     >
-                      Forgot your password?
-                    </a>
+                      {type === "login" ? "Forgot your password?" : ""}
+                    </Link>
                   </div>
                   <Input
                     id="password"
@@ -97,15 +100,27 @@ export function LoginOrSignupForm({ type }: LoginOrSignupFormProps) {
                 </Field>
                 <Field>
                   <Button
+                    isLoading={
+                      isSignupPending || isLoginPending || isGoogleLoginPending
+                    }
                     type="submit"
                     onClick={async (e) => {
                       e.preventDefault();
                       await (type === "login" ? login : signup)(formData);
                     }}
+                    className="cursor-pointer"
                   >
                     {keyword}
                   </Button>
-                  <Button variant="outline" type="button">
+                  <Button
+                    isLoading={
+                      isSignupPending || isLoginPending || isGoogleLoginPending
+                    }
+                    variant="outline"
+                    type="button"
+                    onClick={async () => await googleLogin()}
+                    className="cursor-pointer"
+                  >
                     Log in with Google
                   </Button>
                   <FieldDescription className="text-center">

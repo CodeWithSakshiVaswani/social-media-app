@@ -1,35 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUserContext } from "../_components/context/UserContext";
 import { sendEmailVerification } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { FirebaseError } from "firebase/app";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
 
 const VerifyEmailPage = () => {
-  const [loading, setLoading] = useState(false);
   const { user } = useUserContext();
   const router = useRouter();
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const intervalId = setInterval(async () => {
       if (!user) return;
       await user.reload();
       if (user.emailVerified) {
-        router.push("/");
-        clearInterval(interval);
+        window.location.href = "/";
       }
     }, 3000);
-    return () => clearInterval(interval);
+
+    return () => clearInterval(intervalId);
   }, [user, router]);
 
-  const resendVerificationEmail = async () => {
-    if (!user) return;
-    setLoading(true);
-    await sendEmailVerification(user);
-    setLoading(false);
-
-    alert("Verification email sent again!");
-  };
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["resend"],
+    mutationFn: async () => {
+      if (!user) return;
+      await sendEmailVerification(user);
+    },
+    onSuccess: () => alert("Verification email sent again!"),
+    onError: (error) => {
+      if (error instanceof FirebaseError) toast.error(error.message);
+    },
+  });
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -42,10 +47,10 @@ const VerifyEmailPage = () => {
         </p>
         <button
           className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-          disabled={loading}
-          onClick={resendVerificationEmail}
+          disabled={isPending}
+          onClick={() => mutate()}
         >
-          {loading ? "sending email..." : "resend email"}
+          {isPending ? "sending email..." : "resend email"}
         </button>
       </div>
     </div>

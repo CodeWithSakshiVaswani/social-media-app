@@ -30,6 +30,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("Reloaded user", user);
       setUser(user);
       setIsInitialLoadingPending(false);
     });

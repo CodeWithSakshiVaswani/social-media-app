@@ -1,3 +1,12 @@
+"use client";
+
+import useSignout from "@/hooks/auth/useSignout";
+
 export default function Home() {
-  return <div>Home</div>;
+  const { mutateAsync: signout } = useSignout();
+  return (
+    <div>
+      <button onClick={() => signout()}>signout</button>
+    </div>
+  );
 }
