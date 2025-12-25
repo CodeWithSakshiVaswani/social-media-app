@@ -4,10 +4,21 @@ import usePasswordResetEmail from "@/hooks/auth/usePasswordResetEmail";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const PasswordResetEmailPage = () => {
   const [email, setEmail] = useState<string>("");
-  const { mutateAsync: passwordresetemail } = usePasswordResetEmail();
+  const { mutateAsync: passwordresetemail, isPending: isLinkSendingPending } =
+    usePasswordResetEmail();
 
   return (
     <div className="flex flex-col h-screen">
@@ -15,33 +26,36 @@ const PasswordResetEmailPage = () => {
         Snapit
       </div>
       <div className="flex justify-center items-center py-12 flex-1">
-        <div className="flex flex-col items-center justify-between pt-6 max-w-md border border-gray-700 rounded-b-xs">
-          <div className="flex flex-col items-center justify-between gap-2 px-16 mb-28">
-            <Lock size={100} />
-            <h5 className="font-bold text-xl">Trouble with logging in?</h5>
-            <p className="text-center font-normal text-sm text-gray-400 mb-6">
+        <Card className="flex flex-col items-center justify-between text-center pt-6 pb-0 w-full max-w-md">
+          <CardHeader className="flex flex-col items-center w-full">
+            <CardTitle className="flex flex-col items-center gap-3">
+              <Lock size={80} />
+              <h5 className="font-bold text-xl">Trouble with logging in?</h5>
+            </CardTitle>
+            <CardDescription>
               Enter your email address, phone number or username, and we&apos;ll
               send you a link to get back into your account.
-            </p>
-
-            <input
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input
               type="email"
               value={email}
               placeholder="Enter your email Address"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 bg-gray-800 rounded-xs mb-3"
             />
-            <button
+            <Button
+              isLoading={isLinkSendingPending}
               onClick={() => passwordresetemail(email)}
-              className="w-full p-1 rounded-sm bg-blue-800"
+              className="w-full mb-16"
             >
               Sent Login Link
-            </button>
-          </div>
-          <div className="flex items-center justify-center bg-gray-700 w-full p-3 ">
+            </Button>
+          </CardContent>
+          <CardFooter className="bg-input w-full flex justify-center rounded-b-xl p-4">
             <Link href={"/login"}>Back to Login</Link>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
 "use client";
 
-import useSignout from "@/hooks/auth/useSignout";
+import Sidebar from "./_components/sidebar/Sidebar";
 
 export default function Home() {
-  const { mutateAsync: signout } = useSignout();
   return (
-    <div>
-      <button onClick={() => signout()}>signout</button>
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex-1">hello</div>
     </div>
   );
 }
