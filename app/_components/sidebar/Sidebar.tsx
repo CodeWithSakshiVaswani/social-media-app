@@ -1,5 +1,5 @@
 import useSignout from "@/hooks/auth/useSignout";
-import { Heart, House, List, Plus, Search, SquarePlay } from "lucide-react";
+import { Heart, House, List, Search } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -16,18 +16,6 @@ import { cn } from "@/lib/utils";
 import SearchPanel from "./Panel/SearchPanel";
 import NotificationsPanel from "./Panel/NotificationsPanel";
 import { useUserContext } from "../context/UserContext";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Image as ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
 import CreateDialog from "./Panel/CreateDialog";
 
 enum ActivePanel {
@@ -40,7 +28,6 @@ const Sidebar = () => {
   const [activePanel, setActivePanel] = useState<ActivePanel | null>(null);
   const collapseSidebar = !!activePanel;
   const { user } = useUserContext();
-  console.log(user);
 
   const initials = user?.displayName
     ? user.displayName
@@ -147,17 +134,23 @@ const Sidebar = () => {
               );
             })}
             <CreateDialog collapseSidebar={collapseSidebar} />
-            <li
-              className={cn(
-                "flex items-center gap-4 p-3 cursor-pointer",
-                collapseSidebar ? "" : "hover:rounded-md hover:bg-secondary"
-              )}
-            >
-              <Avatar>
-                <AvatarImage src={user?.photoURL || ""} />
-                <AvatarFallback>{initials}</AvatarFallback>
-              </Avatar>
-              <span>{collapseSidebar ? "" : "Profile"}</span>
+            <li>
+              <Link
+                href="/profile"
+                className={cn(
+                  "flex items-center gap-4 p-3 cursor-pointer",
+                  collapseSidebar ? "" : "hover:rounded-md hover:bg-secondary"
+                )}
+                onClick={() => setActivePanel(null)}
+              >
+                {
+                  <Avatar>
+                    <AvatarImage src={user?.photoURL || ""} />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                }
+                {collapseSidebar ? "" : "Profile"}
+              </Link>
             </li>
           </ul>
         </div>

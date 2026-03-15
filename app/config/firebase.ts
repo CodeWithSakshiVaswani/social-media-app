@@ -1,19 +1,22 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAW4eFXrZoxCd6NPRhdLw0obfTPqoQRxHA",
-  authDomain: "socialmedia-app-a02cb.firebaseapp.com",
-  projectId: "socialmedia-app-a02cb",
-  storageBucket: "socialmedia-app-a02cb.firebasestorage.app",
-  messagingSenderId: "46512357142",
-  appId: "1:46512357142:web:ca47a9cdb682cda4375a37",
-  measurementId: "G-PZE3D0J76K",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECTID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
+  appId: process.env.NEXT_PUBLIC_APPID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
+export const db = getFirestore(app);
 
 export const provider = new GoogleAuthProvider();
 
